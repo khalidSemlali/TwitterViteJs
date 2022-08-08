@@ -1,14 +1,12 @@
 <script>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import TweetCreate from "@/Pages/Tweets/create.vue";
 
 export default {
     components: {
         AppLayout,
-        TweetCreate,
     },
     props: {
-        tweets: Array,
+        followings: null,
     },
 };
 </script>
@@ -17,7 +15,7 @@ export default {
     <AppLayout title="Profile">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Les derniers Tweet
+                Mes abonnements
             </h2>
         </template>
 
@@ -26,7 +24,7 @@ export default {
         <div class="py-12">
             <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
                 <div
-                    v-for="tweet in tweets"
+                    v-for="tweet in followings"
                     v-bind:key="tweet.id"
                     class="flex items-center space-x-4 bg-white overflow-hidden rounded rounded-b-none border-b-2 border-gray-200 py-6 px-4"
                 >
@@ -50,21 +48,8 @@ export default {
                             {{ tweet.content }}
                         </div>
                     </div>
-                    <div
-                        v-if="tweet.user.id != $page.props.user.id"
-                        class="w-40"
-                    >
+                    <div class="w-40">
                         <inertia-link
-                            v-if="!tweet.user.is_followed"
-                            as="button"
-                            method="POST"
-                            :href="`/follows/${tweet.user.id}`"
-                            class="bg-white text-blue-500 cursor-pointer px-5 py-2 hover:text-white border border-blue-500 leading-tight hover:bg-blue-500 rounded-full font-extrabold transition-all duration-300"
-                            preserve-scroll
-                            >Suivre</inertia-link
-                        >
-                        <inertia-link
-                            v-else
                             as="button"
                             method="POST"
                             :href="`/unfollows/${tweet.user.id}`"

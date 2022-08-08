@@ -74,6 +74,18 @@ const logout = () => {
                                     Tweets
                                 </JetNavLink>
                             </div>
+                            <div
+                                class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex"
+                            >
+                                <JetNavLink
+                                    :href="route('tweets.followings')"
+                                    :active="
+                                        route().current('tweets.followings')
+                                    "
+                                >
+                                    Mes abonnements
+                                </JetNavLink>
+                            </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">

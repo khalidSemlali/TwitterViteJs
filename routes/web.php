@@ -34,6 +34,10 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');  
-    Route::post('tweets', [App\Http\Controllers\TweetController::class, 'store'])->name('tweets.store');
+    Route::post('store', [App\Http\Controllers\TweetController::class, 'store'])->name('tweets.store');
+    Route::get('followings', [App\Http\Controllers\TweetController::class, 'followings'])->name('tweets.followings');
+    Route::Post('/follows/{user:id}', [App\Http\Controllers\TweetController::class, 'follows'])->name('tweets.follows');
+    Route::Post('/unfollows/{user:id}', [App\Http\Controllers\TweetController::class, 'unfollows'])->name('tweets.unfollows');
+
 
 });
