@@ -38,6 +38,7 @@ Route::middleware([
     Route::get('followings', [App\Http\Controllers\TweetController::class, 'followings'])->name('tweets.followings');
     Route::Post('/follows/{user:id}', [App\Http\Controllers\TweetController::class, 'follows'])->name('tweets.follows');
     Route::Post('/unfollows/{user:id}', [App\Http\Controllers\TweetController::class, 'unfollows'])->name('tweets.unfollows');
+    Route::get('/profile/{user:name}', [App\Http\Controllers\TweetController::class, 'profile'])->name('tweets.profile');
 
 
 });
