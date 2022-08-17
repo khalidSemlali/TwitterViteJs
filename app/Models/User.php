@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\Models\Tweet;
+use Laravel\Sanctum\HasApiTokens;
+use Laravel\Jetstream\HasProfilePhoto;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -22,7 +22,7 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var array
      */
     protected $fillable = [
         'name',
@@ -31,7 +31,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * The attributes that should be hidden for arrays.
      *
      * @var array
      */
@@ -43,7 +43,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * The attributes that should be cast to native types.
      *
      * @var array
      */
@@ -65,23 +65,25 @@ class User extends Authenticatable
         return $this->hasMany(Tweet::class)->orderBy('created_at', 'DESC');
     }
 
-    public function followings()
-    {
-        return $this->belongsToMany(
-            User::class,
-            'followings',
-            'follower_id',
-            'following_id'
-        );
-    }
-
     public function followers()
     {
         return $this->belongsToMany(
-            User::class,
+            'App\Models\User',
             'followings',
             'following_id',
             'follower_id'
-        );
+        )
+        ->withTimestamps();
+    }
+
+    public function followings()
+    {
+        return $this->belongsToMany(
+            'App\Models\User',
+            'followings',
+            'follower_id',
+            'following_id'
+        )
+        ->withTimestamps();
     }
 }

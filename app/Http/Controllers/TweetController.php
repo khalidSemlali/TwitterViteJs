@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\models\User;
-use App\models\Tweet;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Tweet;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 
 class TweetController extends Controller
 {
     public function index()
     {
-        $tweets = Tweet::with([
-            'user' => fn($query) => $query->withCount([
-                'followers as is_followed' => fn($query) => $query->where('follower_id', auth()->user()->id)
-            ])
-            ->withCasts(['is_followed' => 'boolean'])
-        ])->orderBy('created_at', 'DESC')->get();
+        $tweets = Tweet::orderBy('created_at', 'DESC')
+        ->with(['user' => fn ($q) => $q->withCount([
+            'followers as isFollowing' => fn ($q) => $q
+                ->where('follower_id', auth()->user()->id)])
+                ->withCasts(['isFollowing' => 'boolean'])
+        ])->get();
 
         return Inertia::render('Tweets/index', [
             'tweets' => $tweets
@@ -43,7 +45,13 @@ class TweetController extends Controller
         $followings = Tweet::with('user')
         ->whereIn('user_id', auth()->user()->pluck('id')->toArray())
         ->orderBy('created_at', 'DESC')
-        ->get();
+        ->with([
+            'user' => fn ($q) => $q->withCount([
+            'followings as isFollowingUser' => fn ($q) => $q
+                ->where('following_id', '=', auth()->user()->id)])
+                ->withCasts(['isFollowingUser' => 'boolean'])
+        ])->get();
+
 
         return Inertia::render('Tweets/Followings', [
             'followings' => $followings
@@ -52,14 +60,12 @@ class TweetController extends Controller
 
     public function profile(User $user)
     {
-        $profileUser = $user->loadCount([
-            'followings as is_following_you' => 
-                fn($q) => $q->where('following_id', auth()->user()->id)
-                ->withCasts(['is_following_you' => 'boolean']),
-            'followers as is_followed' => 
-                fn($q) => $q->where('follower_id', auth()->user()->id)
-                ->withCasts(['is_followed' => 'boolean'])
-        ]);
+        $user->loadCount([
+            'followers as isFollowing' => fn ($q) =>
+                $q->where('follower_id', '=', auth()->user()->id)
+                ->withCasts(['isFollowing' => 'boolean']),
+            'followings as is_following_you' => fn ($q) => $q->where('following_id', auth()->user()->id)
+            ]);
 
         $tweets = $user->tweets;
 
@@ -69,15 +75,17 @@ class TweetController extends Controller
         ]);
     }
 
-    public function follows(User $user){ 
-        auth()->user()->followings()->attach($user->id);
+     public function unfollows(User $user)
+    {
+        Auth::user()->followings()->detach($user);
 
-        return Redirect::route('tweets.index');
+        return redirect()->back();
     }
 
-    public function unfollows(User $user){
-        auth()->user()->followings()->detach($user->id);
+    public function follows(User $user)
+    {
+        Auth::user()->followings()->attach($user);
 
-        return Redirect()->back();
+        return redirect()->back();
     }
 }

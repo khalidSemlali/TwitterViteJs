@@ -37,7 +37,7 @@ export default {
                     <div class="flex flex-col w-2/3">
                         <div>
                             <a
-                                class="text-sm text-black-900 font-bold hover:text-blue-400"
+                                class="text-sm text-gray-900 font-bold hover:text-blue-400"
                                 :href="`/profile/${tweet.user.name}`"
                             >
                                 {{ tweet.user.name }}
@@ -46,19 +46,19 @@ export default {
                                 >· le {{ tweet.created_at }}</span
                             >
                         </div>
-                        <div class="text-sm text-darkgray-400 font-thin">
+                        <div class="text-sm text-gray-400 font-thin">
                             {{ tweet.content }}
                         </div>
                     </div>
                     <div
-                        v-if="tweet.user.id != $page.props.user.id"
+                        v-if="tweet.user.id !== $page.props.user.id"
                         class="w-40"
                     >
                         <inertia-link
-                            v-if="!tweet.user.is_followed"
+                            v-if="!tweet.user.isFollowing"
                             as="button"
-                            method="POST"
                             :href="`/follows/${tweet.user.id}`"
+                            method="POST"
                             class="bg-white text-blue-500 cursor-pointer px-5 py-2 hover:text-white border border-blue-500 leading-tight hover:bg-blue-500 rounded-full font-extrabold transition-all duration-300"
                             preserve-scroll
                             >Suivre</inertia-link
@@ -66,11 +66,11 @@ export default {
                         <inertia-link
                             v-else
                             as="button"
-                            method="POST"
                             :href="`/unfollows/${tweet.user.id}`"
-                            class="bg-white text-blue-500 cursor-pointer px-5 py-2 hover:text-white border border-blue-500 leading-tight hover:bg-blue-500 rounded-full font-extrabold transition-all duration-300"
+                            method="POST"
+                            class="bg-white text-blue-500 cursor-pointer px-5 py-2 flex-shrink-0 hover:text-white border border-blue-500 leading-tight hover:bg-blue-500 rounded-full font-extrabold transition-all duration-300"
                             preserve-scroll
-                            >Ne plus Suivre</inertia-link
+                            >Ne Plus Suivre</inertia-link
                         >
                     </div>
                 </div>
