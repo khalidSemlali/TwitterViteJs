@@ -27,15 +27,19 @@ Route::get('/', function () {
 
 Route::get('tweets', [App\Http\Controllers\TweetController::class, 'index'])->name('tweets.index');
 
-Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
-    Route::get('/dashboard', fn () => Inertia\Inertia::render('Dashboard'))->name('dashboard');
-
-    Route::get('/tweets', [App\Http\Controllers\TweetController::class, 'index'])->name('tweets.index');
-    Route::post('/tweets', [App\Http\Controllers\TweetController::class, 'store'])->name('tweets.store');
-
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');  
+    Route::post('store', [App\Http\Controllers\TweetController::class, 'store'])->name('tweets.store');
+    Route::get('followings', [App\Http\Controllers\TweetController::class, 'followings'])->name('tweets.followings');
+    Route::Post('/follows/{user:id}', [App\Http\Controllers\TweetController::class, 'follows'])->name('tweets.follows');
+    Route::Post('/unfollows/{user:id}', [App\Http\Controllers\TweetController::class, 'unfollows'])->name('tweets.unfollows');
     Route::get('/profile/{user:name}', [App\Http\Controllers\TweetController::class, 'profile'])->name('tweets.profile');
 
-    Route::get('/followings', [App\Http\Controllers\TweetController::class, 'followings'])->name('tweets.followings');
-    Route::post('/unfollows/{user:id}', [App\Http\Controllers\TweetController::class, 'unfollows'])->name('tweets.followings.store');
-    Route::post('/follows/{user:id}', [App\Http\Controllers\TweetController::class, 'follows'])->name('tweets.followings.store');
+
 });

@@ -17,7 +17,7 @@ export default {
     <AppLayout title="Profile">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Les derniers Tweet
+                Tweets
             </h2>
         </template>
 
@@ -37,7 +37,7 @@ export default {
                     <div class="flex flex-col w-2/3">
                         <div>
                             <a
-                                class="text-sm text-gray-900 font-bold hover:text-blue-400"
+                                class="text-sm text-pink-900 font-bold hover:text-blue-400"
                                 :href="`/profile/${tweet.user.name}`"
                             >
                                 {{ tweet.user.name }}

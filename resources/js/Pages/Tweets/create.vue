@@ -33,13 +33,6 @@ export default {
 };
 </script>
 
-<style scoped>
-button:disabled {
-    opacity: 50%;
-    cursor: not-allowed;
-}
-</style>
-
 <template>
     <div class="py-6">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
